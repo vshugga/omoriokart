@@ -8,10 +8,14 @@ class Player:
         self.game = game
         self.x, self.y = player_pos
         self.angle = player_angle
+        self.angle_diff = 0 
+        #self.alt = 1.0
 
     def movement(self):
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
+        
+
         dx, dy = 0, 0
         speed = player_speed * self.game.delta_time
         speed_sin = speed * sin_a
@@ -33,29 +37,45 @@ class Player:
 
 
         self.check_wall_collision(dx, dy)
+        ta = self.angle
 
         if keys[pg.K_LEFT]:
             self.angle -= player_rot_speed * self.game.delta_time
         if keys[pg.K_RIGHT]:
             self.angle += player_rot_speed * self.game.delta_time
+        
+        '''
+        if keys[pg.K_q]:
+            self.alt += speed
+        if keys[pg.K_e]:
+            self.alt -= speed
+        '''
+
+        #self.alt = min(max(self.alt, 0.3), 4.0)
         self.angle %= math.tau
+        self.angle_diff = self.angle - ta
+
+        #print(self.angle_diff)
+
 
     def check_wall(self, x, y):
         return (x, y) not in self.game.map.world_map
 
     def check_wall_collision(self, dx, dy):
-        if self.check_wall(int(self.x + dx), int(self.y)):
+        scale = player_size_scale / self.game.delta_time
+        if self.check_wall(int(self.x + dx * scale), int(self.y)):
             self.x += dx
-        if self.check_wall(int(self.x), int(self.y + dy)):
+        if self.check_wall(int(self.x), int(self.y + dy * scale)):
             self.y += dy
 
 
     def draw(self):
-        pg.draw.line(self.game.screen, 'yellow', 
-            (self.x * 100, self.y * 100), 
-            (self.x * 100 + width * math.cos(self.angle),
-            self.y * 100 + width * math.sin(self.angle)), 2)
-        pg.draw.circle(self.game.screen, 'green', (self.x * 100, self.y * 100), 15)
+        bs = 20
+        #pg.draw.line(self.game.screen, 'yellow', 
+        #    (self.x * bs, self.y * bs), 
+        #    (self.x * bs + width * math.cos(self.angle),
+        #    self.y * bs + width * math.sin(self.angle)), 2)
+        pg.draw.circle(self.game.screen, 'green', (self.x * bs, self.y * bs), 15)
 
             
 
