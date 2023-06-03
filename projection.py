@@ -23,11 +23,15 @@ class Projection:
                                               self.game.player.angle, 
                                               self.game.player.pos)
 
+
+
     @staticmethod
     @njit(fastmath=True, parallel=True)
     def render_frame(floor_array, screen_array, tex_size, angle, player_pos):
 
         sin, cos = np.sin(angle), np.cos(angle)
+        fov_factor = 2 * np.tan(np.radians(half_fov))
+
 
         for i in prange(width):
             #new_alt = alt
@@ -36,16 +40,19 @@ class Projection:
                 y = j + focal_len
                 z = j - half_height + 0.01
 
-                #px = x / z * p_scale
-                #py = y / z * p_scale
-
-                px = (x * sin + y * cos)
-                py = (x * cos - y * sin)
+                px = (x * sin + y * cos) * np.tan(half_fov)
+                py = (x * cos - y * sin) * np.tan(half_fov)
 
                 floor_x = px / z + player_pos[0]
                 floor_y = py / z - player_pos[1]
 
-                floor_pos = int((floor_x * p_scale) % tex_size[0]), int((floor_y * p_scale) % tex_size[1])
+                floor_x *= p_scale
+                floor_y *= p_scale
+
+                floor_x %= tex_size[0]
+                floor_y %= tex_size[1]
+
+                floor_pos = int(floor_x), int(floor_y)
                 floor_col = floor_array[floor_pos]
 
                 screen_array[i, j] = floor_col

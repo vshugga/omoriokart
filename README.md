@@ -7,4 +7,4 @@ Tools used:
 - VSCode
 - Git
 - GIMP
-- Tiled Map Editor by Thorbjørn
+- Tiled (Map editor)

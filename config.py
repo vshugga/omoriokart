@@ -15,7 +15,7 @@ player_size_scale = 60
 
 floor_color = (30, 30, 30)
 
-fov = math.pi / 3.25
+fov = math.pi / 3
 #fov = 3
 half_fov = fov / 2
 num_rays = width // 2
@@ -29,5 +29,6 @@ texture_size = 256
 half_texture_size = texture_size // 2
 scale = width // num_rays
 
-focal_len = 250
+focal_len = 800
 p_scale = 100 # projection scale
+#p_scale = 90 / fov * (width / 1200)

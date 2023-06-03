@@ -26,7 +26,7 @@ class ObjectHandler:
         add_sprite(AnimatedSprite(game, path=self.anim_sprite_path + 'test/0.png', pos=(3.5, 18.5)))
 
         # npc map
-        add_npc(NPC(game, self.npc_sprite_path+'hotdogger.jpeg', pos=(5, 5)))
+        #add_npc(NPC(game, self.npc_sprite_path+'hotdogger.jpeg', pos=(5, 5)))
         # add_npc(SoldierNPC(game, pos=(11.5, 4.5)))
         # add_npc(SoldierNPC(game, pos=(13.5, 6.5)))
         # add_npc(SoldierNPC(game, pos=(2.0, 20.0)))

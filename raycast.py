@@ -41,7 +41,7 @@ class Raycast:
         ox, oy = self.game.player.pos              # Coordinates of player
         x_map, y_map = self.game.player.map_pos    # Top left coordinates of players tile
 
-        ray_angle = self.game.player.angle - half_fov + 0.0001
+        ray_angle = self.game.player.angle - half_fov - 0.0001
         for ray in range(num_rays):
             sin_a = math.sin(ray_angle)
             cos_a = math.cos(ray_angle)
