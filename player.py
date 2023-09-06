@@ -4,18 +4,32 @@ import math
 
 
 class Player:
-    def __init__(self, game):
+    def __init__(self, game, sprite):
+        '''Sprite: name of player sprite in config.py'''
         self.game = game
         self.x, self.y = player_pos
         self.angle = player_angle
-        self.angle_diff = 0 
+        self.angle_diff = 0
+        self.screen = game.screen
+        self.turning_right = False
+        self.turning_left = False
+
+        self.sprites = {
+        }
+        
+        for d in ['left', 'right', 'forward']:
+            img = pg.image.load(f'{player_sprites[sprite]}/{d}.png').convert_alpha()
+            img = pg.transform.scale(img, (img.get_width()*player_sprite_scale, img.get_height()*player_sprite_scale))
+            self.sprites[d] = img
+
+        #self.sprite = pg.image.load(player_sprites[sprite]).convert_alpha()
+        #self.sprite_pos = (half_width-self.sprites['forward'].get_width()/2, height*0.8)
         #self.alt = 1.0
 
     def movement(self):
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
         
-
         dx, dy = 0, 0
         speed = player_speed * self.game.delta_time
         speed_sin = speed * sin_a
@@ -28,21 +42,31 @@ class Player:
         if keys[pg.K_s]:
             dx += -speed_cos
             dy += -speed_sin
+
+        # Do not strafe
+        '''
         if keys[pg.K_a]:
             dx += speed_sin
             dy += -speed_cos
         if keys[pg.K_d]:
             dx += -speed_sin
             dy += speed_cos
+        '''
 
 
         self.check_wall_collision(dx, dy)
         ta = self.angle
 
-        if keys[pg.K_LEFT]:
+        if keys[pg.K_a]:
+            self.turning_left = True
             self.angle -= player_rot_speed * self.game.delta_time
-        if keys[pg.K_RIGHT]:
+        else:
+            self.turning_left = False
+        if keys[pg.K_d]:
+            self.turning_right = True
             self.angle += player_rot_speed * self.game.delta_time
+        else:
+            self.turning_right = False
         
         '''
         if keys[pg.K_q]:
@@ -70,18 +94,29 @@ class Player:
 
 
     def draw(self):
-        bs = 20
-        #pg.draw.line(self.game.screen, 'yellow', 
-        #    (self.x * bs, self.y * bs), 
-        #    (self.x * bs + width * math.cos(self.angle),
-        #    self.y * bs + width * math.sin(self.angle)), 2)
+        bs = 5
+        '''
+        pg.draw.line(self.game.screen, 'yellow', 
+            (self.x * bs, self.y * bs), 
+            (self.x * bs + width * math.cos(self.angle),
+            self.y * bs + width * math.sin(self.angle)), 2)
+        '''
+        img = self.sprites['forward']
+        if self.turning_right:
+            img = self.sprites['right']
+        elif self.turning_left:
+            img = self.sprites['left']
+
+        self.game.screen.blit(img, (half_width-img.get_width()/2, player_sprite_height))
         pg.draw.circle(self.game.screen, 'green', (self.x * bs, self.y * bs), 15)
+        #print(self.sprite_pos)
 
             
 
 
     def update(self):
         self.movement()
+        #print(self.x, self.y)
 
     @property
     def pos(self):

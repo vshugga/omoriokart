@@ -18,12 +18,12 @@ class Game:
         self.new_game()
 
     def new_game(self):
+        self.floor_projection = Projection(self)
         self.map = Map(self)
-        self.player = Player(self)
+        self.player = Player(self, 'omori')
         self.object_renderer = ObjectRenderer(self)
         self.raycast = Raycast(self)
         self.object_handler = ObjectHandler(self)
-        self.floor_projection = Projection(self)
         #self.static_sprite = SpriteObject(self)
         #self.animated_sprite = AnimatedSprite(self)
 
@@ -44,7 +44,7 @@ class Game:
         #self.screen.fill('black')
         self.floor_projection.draw()
         self.object_renderer.draw()
-        self.map.draw()
+        # self.map.draw()
         self.player.draw()
         
 

@@ -15,6 +15,7 @@ class NPC(AnimatedSprite):
         #self.attack_dist = randint(3, 6)
         self.speed = 0.03
         self.size = 20
+        self.path_i = 0
         #self.health = 100
         #self.attack_damage = 10
         #self.accuracy = 0.15
@@ -29,6 +30,7 @@ class NPC(AnimatedSprite):
         self.get_sprite()
         #self.run_logic()
         # self.draw_ray_cast()
+        self.movement()
 
     def check_wall(self, x, y):
         return (x, y) not in self.game.map.world_map
@@ -40,6 +42,25 @@ class NPC(AnimatedSprite):
             self.y += dy
 
     def movement(self):
+        next_x, next_y = car_path[self.path_i]
+
+        angle = math.atan2(next_y + 0.5 - self.y, next_x + 0.5 - self.x)
+        dy = math.sin(angle) * self.speed
+        dx = math.cos(angle) * self.speed
+
+        self.x += dx
+        self.y += dy
+
+    
+
+        if (next_x - 1 < self.x < next_x + 1) and \
+            (next_x - 1 < self.x < next_x + 1):
+            self.path_i += 1 % len(car_path)
+            print(next_x, next_y)
+            print(self.x, self.y)
+            print(self.path_i)
+
+        '''
         next_pos = self.game.pathfinding.get_path(self.map_pos, self.game.player.map_pos)
         next_x, next_y = next_pos
 
@@ -49,6 +70,9 @@ class NPC(AnimatedSprite):
             dx = math.cos(angle) * self.speed
             dy = math.sin(angle) * self.speed
             self.check_wall_collision(dx, dy)
+        '''
+
+    
 
     def attack(self):
         if self.animation_trigger:
@@ -139,7 +163,7 @@ class NPC(AnimatedSprite):
         delta_depth = dy / sin_a
         dx = delta_depth * cos_a
 
-        for i in range(MAX_DEPTH):
+        for i in range(max_depth):
             tile_hor = int(x_hor), int(y_hor)
             if tile_hor == self.map_pos:
                 player_dist_h = depth_hor
@@ -160,7 +184,7 @@ class NPC(AnimatedSprite):
         delta_depth = dx / cos_a
         dy = delta_depth * sin_a
 
-        for i in range(MAX_DEPTH):
+        for i in range(max_depth):
             tile_vert = int(x_vert), int(y_vert)
             if tile_vert == self.map_pos:
                 player_dist_v = depth_vert

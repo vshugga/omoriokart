@@ -2,6 +2,7 @@ import pygame as pg
 from config import *
 
 _ = 0
+'''
 mini_map = [ # Should be equivalent to resolution? (maybe auto-adjust block size based on it)
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 1],
@@ -13,29 +14,46 @@ mini_map = [ # Should be equivalent to resolution? (maybe auto-adjust block size
     [1, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
+'''
+
 
 
 class Map:
     def __init__(self, game):
         self.game = game
-        self.mini_map = mini_map
+        #self.mini_map = mini_map
         self.world_map = {}
         self.border = set()
+        self.block_size = 32 # Size of tiles
+        self.generate_map()
         self.get_map()
-        self.block_size = 100 # Size of each map chunk
 
-                
+    def generate_map(self):
+        floor = self.game.floor_projection.floor_tex
+        w, h = floor.get_width(), floor.get_height()
+        w //= self.block_size
+        h //= self.block_size
+
+        #print(w, h)
+
+        top = [1 for i in range(w)]
+        mid = [[1 if i == 0 or i+1 == w else 0 for i in range(w)] for j in range(h)]
+        mid.insert(0, top)
+        mid.insert(-1, top)
+        self.mini_map = mid
+        
+
     def get_map(self):
         for r, row in enumerate(self.mini_map):
             for c, col in enumerate(row):
                 if col:
                     self.world_map[(c, r)] = col
-                if (r == 0 or r >= len(mini_map)-1) or \
-                   (c == 0 or c >= len(mini_map[0])-1):
+                if (r == 0 or r >= len(self.mini_map)-1) or \
+                   (c == 0 or c >= len(self.mini_map[0])-1):
                     self.border.add((c, r))
 
     def draw(self):
-        bs = 20 
+        bs = 5 
         
         # NEW METHOD: perspective projection / texture mapping
         '''
@@ -55,13 +73,21 @@ class Map:
                 texture_color = floor.get_at((texture_x, texture_y))
                 floor_surface.set_at((x, y), texture_color)
 
-        self.game.screen.blit(floor_surface, (0, vert_shift))
         '''
 
         # Draw the mini map blocks
+        
+        #self.game.screen.blit(sel, (0, vert_shift))
+        img = self.game.floor_projection.floor_tex
+        w, h = img.get_width(), img.get_height()
+        minimap = pg.transform.scale(img, (w/bs, h/bs))
+                                     
+        #rect = (x * bs, y * bs, bs, bs)
+        self.game.screen.blit(minimap, (0, 0))
         for x, y in self.world_map:
-            rect = (x * bs, y * bs, bs, bs)
             pg.draw.rect(self.game.screen, 'gray', (x * bs, y * bs, bs, bs), 2)
+
+        
 
 '''
 

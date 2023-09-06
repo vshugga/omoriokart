@@ -52,6 +52,11 @@ class Raycast:
             delta_depth = dy / sin_a
             dx = delta_depth * cos_a
 
+
+            # Default to 0
+            texture_vert = 1
+            texture_hor = 1
+
             for i in range(max_depth):
                 tile_hor = int(x_hor), int(y_hor)
                 if tile_hor in self.game.map.world_map:

@@ -23,10 +23,17 @@ class ObjectHandler:
         #self.spawn_npc()
 
         # sprite map (possibly include in map data structure (use json for that?))
-        add_sprite(AnimatedSprite(game, path=self.anim_sprite_path + 'test/0.png', pos=(3.5, 18.5)))
+        #add_sprite(AnimatedSprite(game, path=self.anim_sprite_path + 'test/0.png', pos=(3.5, 18.5)))
+        
 
         # npc map
         #add_npc(NPC(game, self.npc_sprite_path+'hotdogger.jpeg', pos=(5, 5)))
+
+        add_sprite(SpriteObject(game, self.static_sprite_path+'mirror.png', pos=(20, 20), shift=1))
+        add_sprite(SpriteObject(game, self.static_sprite_path+'mari.png', pos=car_path[0], shift=1))
+
+        add_npc(NPC(game, self.npc_sprite_path+'kelcar_better.png', pos=(10, 10)))
+
         # add_npc(SoldierNPC(game, pos=(11.5, 4.5)))
         # add_npc(SoldierNPC(game, pos=(13.5, 6.5)))
         # add_npc(SoldierNPC(game, pos=(2.0, 20.0)))
@@ -34,6 +41,7 @@ class ObjectHandler:
         # add_npc(CacoDemonNPC(game, pos=(5.5, 14.5)))
         # add_npc(CacoDemonNPC(game, pos=(5.5, 16.5)))
         # add_npc(CyberDemonNPC(game, pos=(14.5, 25.5)))
+
 
     '''
     def spawn_npc(self):

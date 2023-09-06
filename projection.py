@@ -6,7 +6,10 @@ from numba import njit, prange
 class Projection:
     def __init__(self, game):
         self.game = game
-        self.floor_tex = self.game.object_renderer.get_texture('resources/sprites/maps/vastforest.png', (1600, 900))
+        self.floor_tex = pg.image.load('resources/maps/track-vastforest.png')
+        self.floor_tex = pg.transform.flip(self.floor_tex, True, False)
+        #self.floor_tex = pg.transform.scale(ft, (ft.get_width(), ft.get_height()))
+        #self.floor_tex = self.game.object_renderer.get_texture('resources/sprites/maps/vastforest.png', (1600, 900))
         self.tex_size = self.floor_tex.get_size()
         self.floor_array = pg.surfarray.array3d(self.floor_tex)
 
@@ -30,8 +33,7 @@ class Projection:
     def render_frame(floor_array, screen_array, tex_size, angle, player_pos):
 
         sin, cos = np.sin(angle), np.cos(angle)
-        fov_factor = 2 * np.tan(np.radians(half_fov))
-
+        fov_factor = np.tan(half_fov)
 
         for i in prange(width):
             #new_alt = alt
@@ -40,8 +42,8 @@ class Projection:
                 y = j + focal_len
                 z = j - half_height + 0.01
 
-                px = (x * sin + y * cos) * np.tan(half_fov)
-                py = (x * cos - y * sin) * np.tan(half_fov)
+                px = (x * sin + y * cos) * fov_factor#np.tan(half_fov)
+                py = (x * cos - y * sin) * fov_factor#np.tan(half_fov)
 
                 floor_x = px / z + player_pos[0]
                 floor_y = py / z - player_pos[1]
@@ -61,4 +63,5 @@ class Projection:
 
     def draw(self):
         pg.surfarray.blit_array(self.game.screen, self.screen_array)
+        #.blit(self.game.screen, (0, 0))
 
